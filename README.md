@@ -1,20 +1,55 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+# Introduction
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+![NuGet Version](https://img.shields.io/nuget/v/Abstractions.Extensions.AspNetCore.OptionsConfiguration)
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+This is a small extension library meant to be used by library authors creating libraries for asp.net core.
+The library will ensure that required options classes are configured by the consuming application
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+# Example
+Given that you are creating the library 'MyLibrary' which requires the following options class to be configured
+
+```csharp
+public class MyLibraryOptions
+{
+	/// <summary>
+	/// The endpoint to use when calling the service
+	/// </summary>
+	public string Endpoint { get; set; } = "https://default.endpoint";
+
+	/// <summary>
+	/// Required. Your api key.
+	/// </summary>
+	[Required]
+	public string ApiKey { get; set; }
+}
+```
+
+The MyLibrary might define the following extensions class:
+
+```csharp
+public static class MyLibraryExtensions
+{
+	public static IServiceCollection AddMyLibrary(this IServiceCollection services)
+	{
+		
+		services.TryAddSingleton<IMyService, MyService>();
+
+		// This line ensures that the given options type has been configured.
+		// If it has not been configured, the library will automatically look for 
+		// configuration sections named either 'MyLibrary' or 'MyLibraryOptions' 
+		// and configure them automatically.
+		//
+		// The call will also validate data annotations on the options class.
+		services.AddFallbackConfiguration<MyLibraryOptions>();
+
+		// By default, the library will throw an exception if the options have not been
+		// configured and no options can be configured automatically.
+		//
+		// If you want the library to configure autmatically, but not throw an exception
+		// set required to false:
+		services.AddFallbackConfiguration<MyLibraryOptions>(required: false);
+		    
+		return services;
+	}
+}
