@@ -1,7 +1,7 @@
 
 # Introduction
 
-![NuGet Version](https://img.shields.io/nuget/v/Abstractions.Extensions.AspNetCore.OptionsConfiguration)
+[![NuGet version (Abstractions.Extensions.AspNetCore.OptionsConfiguration)](https://img.shields.io/nuget/v/Abstractions.Extensions.AspNetCore.OptionsConfiguration)](https://www.nuget.org/packages/Abstractions.Extensions.AspNetCore.OptionsConfiguration/)
 
 This is a small extension library meant to be used by library authors creating libraries for asp.net core.
 The library will ensure that required options classes are configured by the consuming application
